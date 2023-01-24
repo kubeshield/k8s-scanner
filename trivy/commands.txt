@@ -1,0 +1,41 @@
+
+trivy config ./build > build/out.txt
+trivy image –security-checks config IMAGE_NAME
+
+trivy fs –security-checks vuln,config,secret PATH
+<Config can work with terraform, cloud, k8s, helm etc>
+
+
+# misconfigurations
+trivy conf --severity HIGH,CRITICAL --policy ./custom-policy/policy  --namespaces user custom-policy/configs/
+
+trivy conf --severity HIGH,CRITICAL --policy ./custom-data/policy --data custom-data/data  --namespaces user custom-data/configs/  
+
+trivy conf --severity HIGH,CRITICAL --policy ./combine/policy  --namespaces user combine/configs
+
+
+
+
+
+
+
+
+
+
+
+
+------------
+
+https://aquasecurity.github.io/trivy/v0.34/docs/misconfiguration/custom/
+
+https://github.com/aquasecurity/trivy/tree/main/examples/misconf
+
+
+
+## Use defsec to find misconfiguration with custom policy
+
+https://github.com/aquasecurity/defsec/blob/master/ARCHITECTURE.md
+https://github.com/aquasecurity/trivy/tree/main/examples/misconf
+https://github.com/aquasecurity/defsec/blob/master/internal/rules/policies/kubernetes/lib/kubernetes.rego
+
+trivy conf --policy /path/to/custom_policies --namespaces user /path/to/config_dir

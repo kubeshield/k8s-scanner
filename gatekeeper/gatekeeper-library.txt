@@ -1,0 +1,41 @@
+ 
+https://github.com/open-policy-agent/gatekeeper-library/tree/master/library
+https://github.com/open-policy-agent/gatekeeper-library/tree/master/src
+
+https://www.openpolicyagent.org/docs/latest/policy-reference/#built-in-functions
+
+
+General ->
+1. ServiceAccount:
+    No updation
+    No Automounting
+2. ClusterRole: 
+    `system:aggregate-to-edit` cluster role
+    `system:anonymous`, `system:unauthenticated`
+3. container resources:
+    Limits
+    Requests
+    req-lim ratio
+    req-lim exists
+4. image:
+    Allowed Repository
+    Tag
+    Digest
+5. Service/Ingress:
+    Loadbalancer type services
+    Nodeport services
+    serviceSelectors to be unique in a ns
+    service externalIPs to be on a range
+    Wildcard ingress
+    Ingress has to be httpsonly
+    All ingress rule hosts to be unique
+6. PDB, replica limit, required annotations, labels, probes
+7. StorageClassname in pvc
+
+
+
+
+
+
+PodSecurityPolicy -> 
+

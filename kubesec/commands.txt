@@ -1,0 +1,29 @@
+kubesec scan deploy.yaml > out-deploy.txt
+
+helm template panopticon appscode/panopticon -n kubeops --create-namespace --version=v2022.06.14 | kubesec scan /dev/stdin
+
+
+
+----------------------
+
+https://kubesec.io/
+https://github.com/controlplaneio/kubesec
+
+Checks :: 
+    Resource Requests & Limits
+    SecurityContext : 
+    capabilities
+    privileged
+    readOnlyRootFileSystem
+    runAsNoRoot
+    runAsUser
+    .spec
+    hostAliases
+    hostIPC
+    hostNetwork
+    hostPID
+    volumeClaimTemplates
+    spec.resources
+    spec.accessModes
+    volumes.hostPath.path = `/var/run/docker.sock`
+    AppArmor & SecComp

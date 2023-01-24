@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scanner-trivydb-cacher
+  namespace: kubeops
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          automountServiceAccountToken: true
+          containers:
+          - command:
+            - /scripts/update-trivydb.sh
+            env:
+            - name: FILESERVER_ADDR
+              value: https://scanner.kubeops.svc
+            image: appscode/trivydb:0.0.1
+            imagePullPolicy: IfNotPresent
+            name: cacher
+            resources: {}
+            securityContext: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /var/serving-cert
+              name: serving-cert
+          dnsPolicy: ClusterFirst
+          imagePullSecrets:
+          - name: pull-secret
+          restartPolicy: Never
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: scanner
+          serviceAccountName: scanner
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: serving-cert
+            secret:
+              defaultMode: 420
+              secretName: scanner-apiserver-cert
+      ttlSecondsAfterFinished: 120
+  schedule: 0 */6 * * *
+  successfulJobsHistoryLimit: 1
+  suspend: false

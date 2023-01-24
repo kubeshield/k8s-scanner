@@ -1,0 +1,43 @@
+
+
+kubectl apply -f sync.yaml
+
+kubectl create ns no-label
+
+cat templates/k8srequiredlabels_template.yaml
+
+kubectl apply -f templates/k8srequiredlabels_template.yaml
+
+cat constraints/all_ns_must_have_gatekeeper.yaml
+
+kubectl apply -f constraints/all_ns_must_have_gatekeeper.yaml
+
+kubectl apply -f bad/bad_ns.yaml
+
+cat good/good_ns.yaml
+
+kubectl apply -f good/good_ns.yaml
+
+cat templates/k8suniquelabel_template.yaml
+
+kubectl apply -f templates/k8suniquelabel_template.yaml
+
+kubectl apply -f constraints/all_ns_gatekeeper_label_unique.yaml
+
+cat good/no_dupe_ns.yaml
+
+kubectl apply -f good/no_dupe_ns.yaml
+
+cat bad/no_dupe_ns_2.yaml
+
+kubectl apply -f bad/no_dupe_ns_2.yaml
+
+kubectl get k8srequiredlabels ns-must-have-gk -o yaml
+
+
+## CLEAN UP
+kubectl delete -f constraints
+kubectl delete -f templates
+kubectl delete -f good
+kubectl delete ns no-label
+kubectl delete -f sync.yaml

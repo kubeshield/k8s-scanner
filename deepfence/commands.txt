@@ -1,0 +1,13 @@
+
+docker run -it --rm --name=deepfence-secretscanner -v /var/run/docker.sock:/var/run/docker.sock deepfenceio/deepfence_secret_scanner:latest --image-name alpine
+
+docker run -it --rm --name=deepfence-secretscanner -v /var/run/docker.sock:/var/run/docker.sock  -v ~/dev/demo/deepfence:/home/deepfence/output  \
+        deepfenceio/deepfence_secret_scanner:latest --image-name mongo:4.4.6 --output-path /home/deepfence/output --json-filename out.json
+
+
+
+
+-----------
+
+https://github.com/deepfence/SecretScanner/blob/master/config.yaml
+Use `--config-path ` flag to refer the custom config.yaml file while scanning
