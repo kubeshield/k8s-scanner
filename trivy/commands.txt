@@ -27,15 +27,10 @@ trivy conf --severity HIGH,CRITICAL --policy ./combine/policy  --namespaces user
 ------------
 
 https://aquasecurity.github.io/trivy/v0.34/docs/misconfiguration/custom/
-
 https://github.com/aquasecurity/trivy/tree/main/examples/misconf
-
-
 
 ## Use defsec to find misconfiguration with custom policy
 
 https://github.com/aquasecurity/defsec/blob/master/ARCHITECTURE.md
-https://github.com/aquasecurity/trivy/tree/main/examples/misconf
-https://github.com/aquasecurity/defsec/blob/master/internal/rules/policies/kubernetes/lib/kubernetes.rego
+https://github.com/aquasecurity/defsec/tree/master/internal/rules/policies
 
-trivy conf --policy /path/to/custom_policies --namespaces user /path/to/config_dir
