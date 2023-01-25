@@ -1,0 +1,14 @@
+export RATIFY_NAMESPACE=gatekeeper-system
+export CERT_DIR=/home/arnob/dev/k8s-scanner/gatekeeper/external/ratify/certs 
+
+./generate-tls-certs.sh ${CERT_DIR} ${RATIFY_NAMESPACE}
+
+# the tgz file was created using `helm package .` on the ratify charts folder. And moved here
+helm install ratify /home/arnob/dev/k8s-scanner/gatekeeper/external/ratify/ratify-1.3.0.tgz  --atomic    \
+ --namespace gatekeeper-system     --set-file provider.tls.crt=$CERT_DIR/server.crt   \
+ --set-file provider.tls.key=$CERT_DIR/server.key --set provider.tls.cabundle="$(cat $CERT_DIR/ca.crt | base64 | tr -d '\n')"
+
+
+ Apply the policy files
+ kubectl run demo --image=wabbitnetworks.azurecr.io/test/notary-image:signed -n gatekeeper-system
+ kubectl run demo1 --image=wabbitnetworks.azurecr.io/test/notary-image:unsigned -n gatekeeper-system

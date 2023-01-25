@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: trivy-provider
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trivy-provider
+  namespace: trivy-provider
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: trivy-provider
+  template:
+    metadata:
+      labels:
+        run: trivy-provider
+    spec:
+      containers:
+      - image: sozercan/trivy-provider:v0.0.2
+        imagePullPolicy: Always
+        name: trivy-provider
+        env:
+        - name: REMOTE_URL
+          value: "http://trivy.trivy:4954"
+        ports:
+        - containerPort: 8090
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            cpu: "100m"
+            memory: "100Mi"
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trivy-provider
+  namespace: trivy-provider
+spec:
+  ports:
+  - port: 8090
+    protocol: TCP
+    targetPort: 8090
+  selector:
+    run: trivy-provider
+  sessionAffinity: None

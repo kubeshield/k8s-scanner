@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notvulnerable-deployment
+  labels:
+    app: notvulnerable-deployment
+spec:
+  replicas: 0 
+  selector:
+    matchLabels:
+      app: notvulnerable-deployment
+  template:
+    metadata:
+      labels:
+        app: notvulnerable-deployment
+    spec:
+      containers:
+      - name: static
+        image: gcr.io/distroless/static:latest

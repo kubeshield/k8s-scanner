@@ -1,0 +1,26 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: metadata-assign
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaces: ["default"]
+  # location: "spec.containers[name:nginx].securityContext.privileged"
+  # parameters:
+  #   assign:
+  #     value: true
+  location: "spec.containers[name:networking]"
+  parameters:
+    assign:
+      value:
+        name: "networking"
+        image: quay.io/foo/bar:latest
+        command: ["/bin/bash", "-c", "sleep 100"]

@@ -1,0 +1,23 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8svulnerableimages
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sVulnerableImages
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8svulnerableimages
+
+        violation[{"msg": msg}] {
+          images := [img | img = input.review.object.spec.template.spec.containers[_].image]
+          response := external_data({"provider": "trivy-provider", "keys": images})
+
+          result := response.responses[_]
+          result[1] > 0
+
+          msg := sprintf("Image %v contains %v vulnerabilities", [result[0], result[1]])
+        }

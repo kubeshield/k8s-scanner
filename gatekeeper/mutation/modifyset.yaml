@@ -1,0 +1,20 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: ModifySet
+metadata:
+  name: mutate-modifyset
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  location: "spec.containers[name: nginx].args"
+  parameters:
+    operation: merge
+    # pathTests:
+    # - subPath: "spec.containers[name: nginx]"
+    #   condition: MustExist
+    # - subPath: "spec.containers[name: nginx].securityContext.capabilities"
+    #   condition: MustNotExist
+    values:
+      fromList:
+        - -nginx-debug
