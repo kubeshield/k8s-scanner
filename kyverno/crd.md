@@ -1,70 +1,32 @@
-        Policy.spec =>
+# Policy.spec 
 
 applyrules = How many rules will be applied.  - `One` / `All`
+
 background = whether this policy is applicable to the existing resources. - bool
+
 failurePolicy = How unexpected failures will be handled - Ignore / Fail
+
 generateExistingOnPolicyUpdate = whether to trigger generate-rules in existing resources - bool
+
 mutateExistingOnPolicyUpdate = same as above for mutate-rules
+
 schemaValidation = whether we should validate schema or not - bool
+
 validationFailureAction = whether a policy violation should block the admission review request - Enforce / Audit
+
 validationFailureActionOverrides = it specifies the validationFailureAction namespace-wise
+
 webhookTimeoutSeconds = maximum timeout allowed to apply the policy
 
         rules =>
-<<<<<<<<<<<<<<<<<<<< context >>>>>>>>>>>>>>>>>>
-name:
-apiCall:
-    urlPath: "/apis/networking.k8s.io/v1/namespaces/{{request.object.metadata.namespace}}/ingresses"
-    jmesPath: "items[].spec.rules[].http.paths[].path"
 
-configMap:
-    name:
-    namespace:
+<< NB: These will be found on common.md file >>
+context,
+name,
+match / exclude,
+preconditions
 
-imageRegistry:
-    reference: "{{ element.image }}"
-
-variable:
-    value:
-        name: "{{ request.object.metadata.name }}"
-    jmesPath: "{{ jpExpression }}"
-
-<<<<<<<<<<<<<<<<<<<< match,exclude >>>>>>>>>>>>>>>>>>
-any,all:
-    resources:
-        annotations:
-        kinds: G/V/K
-        name:
-        names:
-        namespaceSelector:
-        namespaces:
-        selector:
-    subjects:
-        apiGroup:
-        kind:
-        name:
-        namespace:
-    roles: []string
-    clusterRoles: []string
-
-
-name =
-<<<<<<<<<<<<<<<<<<<<<<<< preconditions >>>>>>>>>>>>>>>>>>>>>
-
-preconditions:
-    any:
-    - key: "{{ request.object.metadata.labels.color || '' }}"
-      operator: Equals
-      value: blue
-    - key: "{{ request.object.metadata.labels.app || '' }}"
-      operator: Equals
-      value: busybox
-    all:
-    - key: "{{ request.object.metadata.labels.animal || '' }}"
-      operator: Equals
-      value: cow
-
-<<<<<<<<<<<<<<<<<<<< validate >>>>>>>>>>>>>>>>>>>>
+# validate 
 
 pattern:
     spec:
@@ -120,7 +82,7 @@ manifests:
           - spec.replicas
 
 
-<<<<<<<<<<<<<<<<<<<<<<<< mutate >>>>>>>>>>>>>>>>>>>>>
+# mutate 
 
 patchesJson6902: |-
     - path: "/data/ship.properties"
@@ -150,9 +112,9 @@ foreach:
     patchesJson6902:
 
 
-<<<<<<<<<<<<<<<<<<<<<< generate >>>>>>>>>>>>>>>>>>>>>
+# generate 
 
-<<<<<<<<<<<<<<<<<<<<< verifyImages >>>>>>>>>>>>>>>>>>>>>
+# verifyImages 
 
 verifyImages:
     - imageReferences:
@@ -167,6 +129,6 @@ verifyImages:
             5/KAQN0/KjHcorm/J5yctVd7iEcnessRQjU917hmKO6JWVGHpDguIyakZA==
             -----END PUBLIC KEY----- 
 
-<<<<<<<<<<<<<<<<<<<< imageExtractors >>>>>>>>>>>>>>>>>>>>>
+# imageExtractors 
 
 
