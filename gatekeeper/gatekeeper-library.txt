@@ -39,3 +39,20 @@ General ->
 
 PodSecurityPolicy -> 
 
+Using pod.securityContext :
+1. runAsUser, runAsGroup
+2. seLinuxOptions
+3. capabilities
+4. sysctls
+5. allowPriviledgeEscalation
+
+Using PSP.spec :
+1. Priviledged
+2. fsGroup, supplementalGroups
+3. readOnlyRootFileSystem
+4. Host related : allowedHostPaths, HostPID, HostIPC, hostPorts, hostNetwork
+5. allowedProcMountTypes
+
+Others :
+1. AppArmor, seccomp: psp or pod annotations
+2. pod.volumes.flexVolumes
