@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-data-provider
+  namespace: gatekeeper-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: external-data-provider
+  template:
+    metadata:
+      labels:
+        run: external-data-provider
+    spec:
+      containers:
+        - args:
+            - --cert-dir=/certs
+            - --client-ca-file=/tmp/gatekeeper/ca.crt
+            - --port=8090
+          image: arnobkumarsaha/external-data-provider:dev
+          imagePullPolicy: IfNotPresent
+          name: external-data-provider
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - containerPort: 8090
+          volumeMounts:
+            - mountPath: /tmp/gatekeeper
+              name: gatekeeper-ca-cert
+              readOnly: true
+      volumes:
+        - name: gatekeeper-ca-cert
+          secret:
+            defaultMode: 420
+            items:
+              - key: ca.crt
+                path: ca.crt
+            secretName: gatekeeper-webhook-server-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-data-provider
+  namespace: gatekeeper-system
+spec:
+  ports:
+    - port: 8090
+      protocol: TCP
+      targetPort: 8090
+  selector:
+    run: external-data-provider
+  type: ClusterIP
+---
+apiVersion: externaldata.gatekeeper.sh/v1beta1
+kind: Provider
+metadata:
+  name: external-data-provider
+spec:
+  caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSVENDQWkyZ0F3SUJBZ0lVY0JHajNiRGJyNXBuNUtTSWdWWVYxZEhtaHo0d0RRWUpLb1pJaHZjTkFRRUwKQlFBd01qRVRNQkVHQTFVRUNnd0tSMkYwWld0bFpYQmxjakViTUJrR0ExVUVBd3dTUjJGMFpXdGxaWEJsY2lCUwpiMjkwSUVOQk1CNFhEVEl6TURJeU1qRXlORGcxT1ZvWERUSXpNREl5TXpFeU5EZzFPVm93TWpFVE1CRUdBMVVFCkNnd0tSMkYwWld0bFpYQmxjakViTUJrR0ExVUVBd3dTUjJGMFpXdGxaWEJsY2lCU2IyOTBJRU5CTUlJQklqQU4KQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBckdyUmVQdEthVlRtSm9QME1jTWwwTDdEZiswTgp1UjVna1FhZ1JKTFRyRXJiMENLdHBkaEdXYnQ2aG5lbEd4a1czS0g1dmpBT0VFa3RTMlFHQ3JZNTBHUU9BK05vCmw1VmQ2MkFMTldTSnVldy8xRFcweHhramlLQXUxYnRTR3BWaDFGR3RZSHk3RHVDeURkOXM0dS91WU1rMFltdTMKaDZPeEExQ0orKzJIZDd5WnVCR1k0QTVqWlZ3K0xQREc0RkF4U3hIdmpUQTFLekdzK0ZTVVVZdDU4YVJ4YThBSgpSdUw3U1N3UmVCSk5DbWhvZWQ4bnQ1ZXNYTjZhTnpYOGE4YXRsek5Sai9CTFpHRW5OTThkWlZQWVdybk0zTVBoCjBHU3ovaWU1MUE2dldBWGlTcnJ1NThLZUtiTm1hbHFPaXA2dUVZRWlFOUdnWk1PNVNNUGovUVlhN3dJREFRQUIKbzFNd1VUQWRCZ05WSFE0RUZnUVV1bXQwY1plT2t0cWcvc2pERVdRNFNuK1BYSmt3SHdZRFZSMGpCQmd3Rm9BVQp1bXQwY1plT2t0cWcvc2pERVdRNFNuK1BYSmt3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCCkFRc0ZBQU9DQVFFQUJJZ1pYTkNWc2VGZmtrRm5uREpZRld0cXFVWm5mWHhQQ1o4NG5nWWMzcjNHVG5rVUhvVEcKTWtwRG1HTk1Vcis3S2s4Um8yUng5eFhyRWZ2ZExCRG51U244K25PVkRjRndNaDVKclAzaTdpbWxFVXhPQzhCTApocmN1TkliN2dOSnUrN1JMWllHbDFKOTJLUy9RaXh2VjBac3BwSXZPM200VGZ4dmJMckJQRHpIU1ZLcWhnSjc5CkxkQWRueUh1bTdJRGhTNldDSDhWdlZ0YmphWVFGNXM4OGJScS8yVFpRdUVsYVpQU3puRk1mZHBzZHVYbHBsNHAKMFQwZ3c3cTEvNFNKdUdLMjduTmdaK05GNHYrV01YVWt1cWRhZHg0QkllQ25zWEtSQmhVK2U1OHk1b3dReG5LSApKMHE3TkxhYTFCRWhPRHFaaHFnQ09JcmZqam9HVWppc0d3PT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  timeout: 1
+  url: https://external-data-provider.gatekeeper-system:8090
