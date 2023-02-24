@@ -13,15 +13,18 @@ type PolicyReportRequest struct {
 }
 
 type PolicyReportResponse struct {
-	AuditTimestamp Time        `json:"auditTimestamp,omitempty"`
-	Violations     []Violation `json:"violations,omitempty"`
-	// How many times a particular constraint has been violated
-	Stats map[string]int `json:"stats,omitempty"`
+	AuditTimestamp Time         `json:"auditTimestamp,omitempty"`
+	Constraints    []Constraint `json:"constraints,omitempty"`
+}
+
+type Constraint struct {
+	Name              string `json:"name,omitempty"`
+	EnforcementAction string `json:"enforcementAction,omitempty"`
+
+	Violations []Violation `json:"violations,omitempty"`
 }
 
 type Violation struct {
-	kmapi.ObjectInfo
-	EnforcementAction string `json:"enforcementAction"`
-	Message           string `json:"message,omitempty"`
-	ConstraintName    string `json:"constraintName,omitempty"`
+	kmapi.ObjectInfo `json:",inline"`
+	Message          string `json:"message,omitempty"`
 }

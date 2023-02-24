@@ -6,22 +6,14 @@ import (
 	"crypto/x509"
 	"flag"
 	"fmt"
+	"github.com/open-policy-agent/gatekeeper-external-data-provider/pkg/handler"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/open-policy-agent/gatekeeper-external-data-provider/pkg/handler"
 	"github.com/open-policy-agent/gatekeeper-external-data-provider/pkg/utils"
 	"k8s.io/klog/v2"
-)
-
-const (
-	timeout     = 1 * time.Second
-	defaultPort = 8090
-
-	certName = "tls.crt"
-	keyName  = "tls.key"
 )
 
 var (
@@ -34,13 +26,13 @@ func init() {
 	klog.InitFlags(nil)
 	flag.StringVar(&certDir, "cert-dir", "", "path to directory containing TLS certificates")
 	flag.StringVar(&clientCAFile, "client-ca-file", "", "path to client CA certificate")
-	flag.IntVar(&port, "port", defaultPort, "Port for the server to listen on")
+	flag.IntVar(&port, "port", 8090, "Port for the server to listen on")
 	flag.Parse()
 }
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", processTimeout(handler.Handler, timeout))
+	mux.HandleFunc("/", processTimeout(handler.Handler, time.Second))
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", port),
@@ -68,8 +60,8 @@ func main() {
 	}
 
 	if certDir != "" {
-		certFile := filepath.Join(certDir, certName)
-		keyFile := filepath.Join(certDir, keyName)
+		certFile := filepath.Join(certDir, "tls.crt")
+		keyFile := filepath.Join(certDir, "tls.key")
 
 		klog.InfoS("starting external data provider server", "port", port, "certFile", certFile, "keyFile", keyFile)
 		if err := server.ListenAndServeTLS(certFile, keyFile); err != nil {
