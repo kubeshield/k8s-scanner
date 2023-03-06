@@ -1,0 +1,21 @@
+https://github.com/aquasecurity/defsec/tree/master/rules/kubernetes/policies
+
+# General
+Resource req-limits
+securityContext : capabilities, drop ALL, run-as-user, run-as-group,
+Role : Permission of creating roles and association(binding) with privileged rules, ** rules, attaching shells, delete pod-logs, impersonate privileged groups, should not have permission to manage secrets, get-create to nodeProxy resource,
+image tag latest
+Read only file-system
+mount docker socket
+
+advanced -> protecting namespaces, restrict automount SA token, networkPolicy should have podSelector & nsSelector, Use limitRange, use resourceQuota
+aquacommercial -> configMap with secrets or sensitive informations
+cibenchmarks -> k8s internals
+dynamic  -> outdated API
+rolebinding  ->  cluster-admin role should not be bound.
+
+
+# PSS
+Baseline -> HostIPC, HostNetwork, hostPID, privileged, capabilities, host path volumes, host ports,
+    should specify apparmor profile, seLinux options,  shouldn't set procMount, should set sysctl, seccomp profile to unconfined
+Restricted -> allowPriviledgeEscalation to false, runAsNotRoot,

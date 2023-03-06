@@ -1,0 +1,48 @@
+Type Validate =>
+
+## POD or CONTAINER level
+- Block pod exec by : nsLabel, nsName, pod & container, podLabel, podName 
+- envs : check certain env values, Disallow secrets to be used as source of env
+- volumes : socket files should not be mounted as volumes, if mounted require label, ensure read-only hostpath, limit hostPath to specific directories, 
+    restrict volume types, 
+- hostPID- hostIPC- hostNetwork, hostPorts, hostPath, hostProcess
+- Security context : priviledge escalation, priviledge=false, procMount, seLinux, anyUID, capabilities, sysctls, RunAsUser, RunAsGroup, ReadOnlyRootFileSystem, seccomp, 
+    sysctls, fsGroup, 
+- Container : Block ephemeral containers, limit amount of container in pod, container port-names, 
+- POD SECURITY POLICY : Baseline, supplementalGroups, capabilities
+- Resource : Limit-Request ratio, limit-request equality, require this two fields specified, resources specified for emptyDir, 
+- pullPolicy to Always, require ImagePullSecrets, require multi replicas, limit replica count, 
+- POD PRIORITY names in a cm, require priorityClassname in workloads, 
+- Pod security standards : use Restricted level, exemption os pss, 
+- Probes : ensure probes, validate & liveness probe to be different, 
+
+
+
+## K8S resources
+- SERVICE ACCOUNT : Automount sa token, sa name updation in pod-controllers, restrict sa
+- SERVICE : block updation & deletion, Disallow Nodeport, Loadbalancer, require unique external dns service, unique service selector, restrict external IPs, 
+        specify port range
+- CERTIFICATE: renew in every 100days, limit amount of dnsNames, Limit issuer, 
+- PDB : Check pdb minAvailable, maxUnavailable non-zwro, require PDBs, 
+- ROLE : Restrict binding system groups, Restrict binding to cluster-admin, restrict accessing nodes-proxy, should not have edit permission on endpoints, 
+    restrict escalation verb, certain verbs for secrets, wildcard as verbs, wildcard as resources, Restrict some operations on specific resources
+- INGRESS : empty host, host match TLS, https, Limit ingress classes, restrict default backend, host with wildcards, Limit annotations values, limit path values, 
+    uniqu ingress hosts & path, 
+- STORAGECLASS : matched with PVC, storageClass reclaimPolicy, 
+- NETWORK POLICY : ensure, restrict networkPolicy with empty podSelector,
+
+
+
+## OTHERS
+1. IMAGE : Restrict regitries, Allow Repository, Allowed base Image, Image with volumes, Large Imagesm, Stale Images , Check base Image, latest tag, 
+        only trustworthy registries to use Root, require checksum(digest), verify manifest integrity
+2. In METADATA : Allow annotations, allow label changes, deny certain labels, pod-duration-annotations less than 8hours, matches regex, require annotations, Restrict annotations,
+10. APIs: Check deprecated APIs, Disallow deprecated APIs
+12. Time bound policy, 
+15. Disallow defaults : namespace, tlsOptions
+20. Production-Staging handle, 
+21. Namespace : Exclude ns dynamically, ns readiness(inventory) check, 
+25. unique UID per workloads
+27. Restrict control-plane scheduling, restrict NodeAffinity
+28. Node : restrict NodeAffinity, node-label changes, restrict  NodeSelector, Pod counts per node, check node's kernel version
+30. TopologySpreadConstraints for pod-controllers
